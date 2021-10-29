@@ -61,18 +61,18 @@ class QRBarScannerCameraState extends State<QRBarScannerCamera> with WidgetsBind
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      if (shouldResumeOnAppLifecycleChanged) {
+    if (shouldResumeOnAppLifecycleChanged) {
+      if (state == AppLifecycleState.resumed) {
         setState(() => onScreen = true);
+      } else {
+        if (_asyncInitOnce != null && onScreen) {
+          FlutterQrReader.stop();
+        }
+        setState(() {
+          onScreen = false;
+          _asyncInitOnce = null;
+        });
       }
-    } else {
-      if (_asyncInitOnce != null && onScreen) {
-        FlutterQrReader.stop();
-      }
-      setState(() {
-        onScreen = false;
-        _asyncInitOnce = null;
-      });
     }
   }
 
