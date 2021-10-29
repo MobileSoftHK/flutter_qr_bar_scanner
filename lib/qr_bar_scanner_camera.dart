@@ -85,6 +85,12 @@ class QRBarScannerCameraState extends State<QRBarScannerCamera> with WidgetsBind
     return previewDetails;
   }
 
+  void startScanning() {
+    setState(() {
+      _asyncInitOnce = null;
+    });
+  }
+
   /// This method can be used to restart scanning
   ///  the event that it was paused.
   void restart() {
@@ -98,10 +104,11 @@ class QRBarScannerCameraState extends State<QRBarScannerCamera> with WidgetsBind
 
   /// This method can be used to manually stop the
   /// camera.
-  void stop() {
-    (() async {
+  Future stop() async {
+    return await FlutterQrReader.stop();
+    /*(() async {
       await FlutterQrReader.stop();
-    })();
+    })();*/
   }
 
   @override
