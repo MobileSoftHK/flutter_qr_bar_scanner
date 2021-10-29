@@ -74,9 +74,9 @@ class FlutterQrReader {
     return new PreviewDetails(surfaceHeight, surfaceWidth, orientation, textureId);
   }
 
-  static Future stop() {
+  static Future stop() async {
     channelReader.setQrCodeHandler(null);
-    return _channel.invokeMethod('stop').catchError(print);
+    return await _channel.invokeMethod('stop').catchError(print);
   }
 
   static Future heartbeat() {
