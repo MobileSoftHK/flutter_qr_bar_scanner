@@ -133,7 +133,7 @@ class QRBarScannerCameraState extends State<QRBarScannerCamera> with WidgetsBind
               if (details.hasError) {
                 debugPrint(details.error.toString());
                 if (widget.onPermissionDeclined != null && details.error is PlatformException) {
-                  return widget.onPermissionDeclined(context);
+                  return widget.onPermissionDeclined!(context);
                 }
                 return widget.onError(context, details.error);
               }
