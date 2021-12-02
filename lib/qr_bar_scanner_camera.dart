@@ -25,12 +25,11 @@ class QRBarScannerCamera extends StatefulWidget {
     this.fit = BoxFit.cover,
     WidgetBuilder? notStartedBuilder,
     WidgetBuilder? offscreenBuilder,
-    WidgetBuilder? onPermissionDeclined,
+    this.onPermissionDeclined,
     ErrorCallback? onError,
     this.formats,
   })  : notStartedBuilder = notStartedBuilder ?? _defaultNotStartedBuilder,
         offscreenBuilder = offscreenBuilder ?? notStartedBuilder ?? _defaultOffscreenBuilder,
-        onPermissionDeclined = onPermissionDeclined ?? notStartedBuilder ?? _defaultOffscreenBuilder,
         onError = onError ?? _defaultOnError,
         assert(fit != null),
         super(key: key);
@@ -40,7 +39,7 @@ class QRBarScannerCamera extends StatefulWidget {
   final Widget? child;
   final WidgetBuilder notStartedBuilder;
   final WidgetBuilder offscreenBuilder;
-  final WidgetBuilder onPermissionDeclined;
+  final WidgetBuilder? onPermissionDeclined;
   final ErrorCallback onError;
   final List<BarcodeFormats>? formats;
 
@@ -133,7 +132,7 @@ class QRBarScannerCameraState extends State<QRBarScannerCamera> with WidgetsBind
             case ConnectionState.done:
               if (details.hasError) {
                 debugPrint(details.error.toString());
-                if (details.error is PlatformException) {
+                if (onPermissionDeclined != null && details.error is PlatformException) {
                   return widget.onPermissionDeclined(context);
                 }
                 return widget.onError(context, details.error);
