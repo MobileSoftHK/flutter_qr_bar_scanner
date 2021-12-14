@@ -1,26 +1,14 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-//class FlutterQrBarScanner {
-//  static const MethodChannel _channel =
-//      const MethodChannel('flutter_qr_bar_scanner');
-//
-//  static Future<String> get platformVersion async {
-//    final String version = await _channel.invokeMethod('getPlatformVersion');
-//    return version;
-//  }
-//}
-
-
 class PreviewDetails {
-  num? height;
   num? width;
-  num? orientation;
+  num? height;
+  num? sensorOrientation;
   int? textureId;
 
-  PreviewDetails(this.height, this.width, this.orientation, this.textureId);
+  PreviewDetails(this.width, this.height, this.sensorOrientation, this.textureId);
 }
 
 enum BarcodeFormats {
@@ -46,11 +34,12 @@ const _defaultBarcodeFormats = const [
 
 class FlutterQrReader {
   static const MethodChannel _channel = const MethodChannel('com.github.contactlutforrahman/flutter_qr_bar_scanner');
-  static QrChannelReader channelReader = new QrChannelReader(_channel);
+  static QrChannelReader channelReader = QrChannelReader(_channel);
+
   //Set target size before starting
   static Future<PreviewDetails> start({
-    required int height,
     required int width,
+    required int height,
     required QRCodeHandler qrCodeHandler,
     List<BarcodeFormats>? formats = _defaultBarcodeFormats,
   }) async {
@@ -60,8 +49,12 @@ class FlutterQrReader {
     List<String> formatStrings = _formats.map((format) => format.toString().split('.')[1]).toList(growable: false);
 
     channelReader.setQrCodeHandler(qrCodeHandler);
-    var details = await _channel.invokeMethod(
-        'start', {'targetHeight': height, 'targetWidth': width, 'heartbeatTimeout': 0, 'formats': formatStrings});
+    var details = await _channel.invokeMethod('start', {
+      'targetWidth': width,
+      'targetHeight': height,
+      'heartbeatTimeout': 0,
+      'formats': formatStrings,
+    });
 
     // invokeMethod returns Map<dynamic,...> in dart 2.0
     assert(details is Map<dynamic, dynamic>);
@@ -71,7 +64,7 @@ class FlutterQrReader {
     num? surfaceHeight = details["surfaceHeight"];
     num? surfaceWidth = details["surfaceWidth"];
 
-    return new PreviewDetails(surfaceHeight, surfaceWidth, orientation, textureId);
+    return PreviewDetails(surfaceWidth, surfaceHeight, orientation, textureId);
   }
 
   static Future stop() {
@@ -84,7 +77,7 @@ class FlutterQrReader {
   }
 
   static Future<List<List<int>>?> getSupportedSizes() {
-    return _channel.invokeMethod('getSupportedSizes').catchError(print).then((value) => value as List<List<int>>?);
+    return _channel.invokeMethod('getSupportedSizes').catchError(print) as Future<List<List<int>>?>;
   }
 }
 
