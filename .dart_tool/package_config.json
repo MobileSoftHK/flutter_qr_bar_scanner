@@ -53,10 +53,10 @@
       "name": "flutter_qr_bar_scanner",
       "rootUri": "../",
       "packageUri": "lib/",
-      "languageVersion": "2.12"
+      "languageVersion": "2.17"
     }
   ],
-  "generated": "2022-06-09T11:21:57.331257Z",
+  "generated": "2022-06-09T11:38:01.525135Z",
   "generator": "pub",
   "generatorVersion": "2.17.1"
 }
